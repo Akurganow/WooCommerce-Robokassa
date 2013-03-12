@@ -1,17 +1,18 @@
 Robokassa for WooCommerce
 ========
 
-* После активации плагина через панель управления в WooCommerce прописывем
-Логин мерчат, пароль 1, пароль 2
+После активации плагина через панель управления в WooCommerce прописывем
+Логин мерчат, пароль 1, пароль 2 узнать их можно в [личном кабинете robokassa](https://www.roboxchange.com/Environment/Partners/Login/Merchant/Registration.aspx)
 
 
-* В Robokassa прописываем:
-** Result URL: http://your_domain/?robokassa=result
-** Success URL: http://your_domain/?robokassa=success
-** Fail URL: http://your_domain/woocommerce/?robokassa=fail
-** Метод отсылки данных: POST
+В Robokassa прописываем:
+* Result URL: http://your_domain/?robokassa=result
+* Success URL: http://your_domain/?robokassa=success
+* Fail URL: http://your_domain/woocommerce/?robokassa=fail
+* Метод отсылки данных: POST
 
-* Более подробно на <a href="//polzo.ru/wc-robokassa">странице плагина</a>
+
+Более подробно на [странице плагина](http://polzo.ru/wc-robokassa)
 
 
 Installation

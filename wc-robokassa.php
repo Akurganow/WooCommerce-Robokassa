@@ -1,106 +1,83 @@
-<?php /*
+<?php 
+/*
   Plugin Name: Robokassa Payment Gateway
   Plugin URI: 
   Description: Allows you to use Robokassa payment gateway with the WooCommerce plugin.
-  Version: 0.7
+  Version: 0.8
   Author: Alexander Kurganov
-  Author URI: http://polzo.ru
+  Author URI: http://akurganow.ru
  */
 
-
-/*
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License, version 2, as
-  published by the Free Software Foundation.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
- */
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  
  /**
- * Add roubles in carrencies
+ * Add roubles in currencies
  * 
  * @since 0.3
  */
-function robokassa_rur_currency_symbol( $currency_symbol, $currency ) {
-    if($currency == "RUR") {
+function robokassa_rub_currency_symbol( $currency_symbol, $currency ) {
+    if($currency == "RUB") {
         $currency_symbol = 'р.';
     }
     return $currency_symbol;
 }
 
-add_filter( 'woocommerce_currency_symbol', 'robokassa_rur_currency_symbol', 10, 2 );
-
-function robokassa_rur_currency( $currencies ) {
-    $currencies["RUR"] = 'Russian Roubles (р.)';
+function robokassa_rub_currency( $currencies ) {
+    $currencies["RUB"] = 'Russian Roubles';
     return $currencies;
 }
-add_filter( 'woocommerce_currencies', 'robokassa_rur_currency', 10, 1 );
+
+add_filter( 'woocommerce_currency_symbol', 'robokassa_rub_currency_symbol', 10, 2 );
+add_filter( 'woocommerce_currencies', 'robokassa_rub_currency', 10, 1 );
 
 
 /* Add a custom payment class to WC
   ------------------------------------------------------------ */
 add_action('plugins_loaded', 'woocommerce_robokassa', 0);
-function woocommerce_robokassa()
-{
+function woocommerce_robokassa(){
 	if (!class_exists('WC_Payment_Gateway'))
 		return; // if the WC payment gateway class is not available, do nothing
 	if(class_exists('WC_ROBOKASSA'))
 		return;
-class WC_ROBOKASSA extends WC_Payment_Gateway
-{
-	public function __construct()
-	{
-		$plugin_dir = plugin_dir_url(__FILE__);
+class WC_ROBOKASSA extends WC_Payment_Gateway{
+	public function __construct(){
 		
 		global $woocommerce;
 
 		$this->id = 'robokassa';
-		$this->icon = apply_filters('woocommerce_robokassa_icon', ''.$plugin_dir.'robokassa.png');
+		$this->icon = apply_filters('woocommerce_robokassa_icon', $woocommerce->plugin_url().'robokassa.png');
 		$this->has_fields = false;
-        $this->liveurl = 'https://merchant.roboxchange.com/Index.aspx';
+    $this->liveurl = 'https://merchant.roboxchange.com/Index.aspx';
 		$this->testurl = 'http://test.robokassa.ru/Index.aspx';
 
-		
-		
-		// Load the form fields.
+		// Load the settings
 		$this->init_form_fields();
-
-		// Load the settings.
 		$this->init_settings();
 
 		// Define user set variables
-		$this->title = $this->settings['title'];
-		$this->robokassa_merchant = $this->settings['robokassa_merchant'];
-		$this->robokassa_key1 = $this->settings['robokassa_key1'];
-		$this->robokassa_key2 = $this->settings['robokassa_key2'];
-		$this->testmode = $this->settings['testmode'];
-		$this->debug = $this->settings['debug'];
-		$this->description = $this->settings['description'];
-		$this->instructions = $this->settings['instructions'];
+		$this->title = $this->get_option('title');
+		$this->robokassa_merchant = $this->get_option('robokassa_merchant');
+		$this->robokassa_key1 = $this->get_option('robokassa_key1');
+		$this->robokassa_key2 = $this->get_option('robokassa_key2');
+		$this->testmode = $this->get_option('testmode');
+		$this->debug = $this->get_option('debug');
+		$this->description = $this->get_option('description');
+		$this->instructions = $this->get_option('instructions');
 
 		// Logs
-		if ($this->debug == 'yes')
-		{
+		if ($this->debug == 'yes'){
 			$this->log = $woocommerce->logger();
 		}
 
 		// Actions
-		add_action('init', array(&$this, 'check_ipn_response'));
-		add_action('valid-robokassa-standard-ipn-reques', array(&$this, 'successful_request') );
-		add_action('woocommerce_receipt_robokassa', array(&$this, 'receipt_page'));
-		add_action('woocommerce_update_options_payment_gateways', array(&$this, 'process_admin_options'));
+		add_action('init', array($this, 'check_ipn_response'));
+		add_action('valid-robokassa-standard-ipn-reques', array($this, 'successful_request') );
+		add_action('woocommerce_receipt_robokassa', array($this, 'receipt_page'));
 
-		if (!$this->is_valid_for_use())
-		{
+		// Save options
+		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
+
+		if (!$this->is_valid_for_use()){
 			$this->enabled = false;
 		}
 	}
@@ -108,10 +85,8 @@ class WC_ROBOKASSA extends WC_Payment_Gateway
 	/**
 	 * Check if this gateway is enabled and available in the user's country
 	 */
-	function is_valid_for_use()
-	{
-		if (!in_array(get_option('woocommerce_currency'), array('RUR')))
-		{
+	function is_valid_for_use(){
+		if (!in_array(get_option('woocommerce_currency'), array('RUB'))){
 			return false;
 		}
 		return true;
@@ -120,62 +95,64 @@ class WC_ROBOKASSA extends WC_Payment_Gateway
 	/**
 	* Admin Panel Options 
 	* - Options for bits like 'title' and availability on a country-by-country basis
+	*
+	* @since 0.1
 	**/
 	public function admin_options() {
 		?>
 		<h3><?php _e('ROBOKASSA', 'woocommerce'); ?></h3>
 		<p><?php _e('Настройка приема электронных платежей через Merchant ROBOKASSA.', 'woocommerce'); ?></p>
+
+	  <?php if ( $this->is_valid_for_use() ) : ?>
+
 		<table class="form-table">
-		<?php
-			if ( $this->is_valid_for_use() ) :
-    	
+
+		<?php    	
     			// Generate the HTML For the settings form.
     			$this->generate_settings_html();
+    ?>
+    </table><!--/.form-table-->
     		
-    		else :
-		?>
+    <?php else : ?>
 		<div class="inline error"><p><strong><?php _e('Шлюз отключен', 'woocommerce'); ?></strong>: <?php _e('ROBOKASSA не поддерживает валюты Вашего магазина.', 'woocommerce' ); ?></p></div>
 		<?php
 			endif;
-		?>
-		</table><!--/.form-table-->
-		<?php
+
     } // End admin_options()
 
-	function init_form_fields()
-	{
-		$this->form_fields = array
-			(
-				'enabled' => array
-				(
+  /**
+  * Initialise Gateway Settings Form Fields
+  *
+  * @access public
+  * @return void
+  */
+	function init_form_fields(){
+		$this->form_fields = array(
+				'enabled' => array(
 					'title' => __('Включить/Выключить', 'woocommerce'),
 					'type' => 'checkbox',
 					'label' => __('Включен', 'woocommerce'),
 					'default' => 'yes'
 				),
-				'title' => array
-				(
+				'title' => array(
 					'title' => __('Название', 'woocommerce'),
 					'type' => 'text', 
 					'description' => __( 'Это название, которое пользователь видит во время проверки.', 'woocommerce' ), 
 					'default' => __('ROBOKASSA', 'woocommerce')
 				),
-				'robokassa_merchant' => array
-				(
+				'robokassa_merchant' => array(
 					'title' => __('Логин', 'woocommerce'),
 					'type' => 'text',
 					'description' => __('Пожалуйста введите Логин', 'woocommerce'),
 					'default' => 'demo'
 				),
-				'robokassa_key1' => array
-				(
+				'robokassa_key1' => array(
 					'title' => __('Пароль #1', 'woocommerce'),
 					'type' => 'password',
 					'description' => __('Пожалуйста введите паоль №1.', 'woocommerce'),
 					'default' => ''
 				),
-				'robokassa_key2' => array
-				(
+				'robokassa_key2' => array(
 					'title' => __('Пароль #2', 'woocommerce'),
 					'type' => 'password',
 					'description' => __('Пожалуйста введите пароль №2.', 'woocommerce'),
@@ -197,14 +174,14 @@ class WC_ROBOKASSA extends WC_Payment_Gateway
 				'description' => array(
 					'title' => __( 'Description', 'woocommerce' ),
 					'type' => 'textarea',
-					'description' => __( 'Payment method description that the customer will see on your website.', 'woocommerce' ),
-					'default' => 'Pay with cash upon delivery.'
+					'description' => __( 'Описанием метода оплаты которое клиент будет видеть на вашем сайте.', 'woocommerce' ),
+					'default' => 'Оплата с помощью robokassa.'
 				),
 				'instructions' => array(
 					'title' => __( 'Instructions', 'woocommerce' ),
 					'type' => 'textarea',
-					'description' => __( 'Instructions that will be added to the thank you page.', 'woocommerce' ),
-					'default' => 'Pay with cash upon delivery.'
+					'description' => __( 'Инструкции, которые будут добавлены на страницу благодарностей.', 'woocommerce' ),
+					'default' => 'Оплата с помощью robokassa.'
 				)
 			);
 	}
@@ -212,28 +189,23 @@ class WC_ROBOKASSA extends WC_Payment_Gateway
 	/**
 	* There are no payment fields for sprypay, but we want to show the description if set.
 	**/
-	function payment_fields()
-	{
-		if ($this->description)
-		{
+	function payment_fields(){
+		if ($this->description){
 			echo wpautop(wptexturize($this->description));
 		}
 	}
 	/**
 	* Generate the dibs button link
 	**/
-	public function generate_form($order_id)
-	{
+	public function generate_form($order_id){
 		global $woocommerce;
 
 		$order = new WC_Order( $order_id );
 
-		if ($this->testmode == 'yes')
-		{
+		if ($this->testmode == 'yes'){
 			$action_adr = $this->testurl;
 		}
-		else
-		{
+		else{
 			$action_adr = $this->liveurl;
 		}
 
@@ -241,8 +213,7 @@ class WC_ROBOKASSA extends WC_Payment_Gateway
 
 		$crc = $this->robokassa_merchant.':'.$out_summ.':'.$order_id.':'.$this->robokassa_key1;
 
-		$args = array
-			(
+		$args = array(
 				// Merchant
 				'MrchLogin' => $this->robokassa_merchant,
 				'OutSum' => $out_summ,
@@ -258,11 +229,10 @@ class WC_ROBOKASSA extends WC_Payment_Gateway
 
 		$args_array = array();
 
-		foreach ($args as $key => $value)
-		{
+		foreach ($args as $key => $value){
 			$args_array[] = '<input type="hidden" name="'.esc_attr($key).'" value="'.esc_attr($value).'" />';
 		}
-/*
+
 		$woocommerce->add_inline_js('
 			jQuery("body").block({ 
 					message: "<img src=\"'.esc_url( $woocommerce->plugin_url() ).'/assets/images/ajax-loader.gif\" alt=\"Redirecting...\" style=\"float:left; margin-right: 10px;\" />'.__('Thank you for your order. We are now redirecting you to PayPal to make payment.', 'woocommerce').'", 
@@ -283,7 +253,7 @@ class WC_ROBOKASSA extends WC_Payment_Gateway
 				});
 			jQuery("#submit_robokassa_payment_form").click();
 		');
-*/
+
 		return
 			'<form action="'.esc_url($action_adr).'" method="POST" id="robokassa_payment_form">'."\n".
 			implode("\n", $args_array).
@@ -294,12 +264,10 @@ class WC_ROBOKASSA extends WC_Payment_Gateway
 	/**
 	 * Process the payment and return the result
 	 **/
-	function process_payment($order_id)
-	{
+	function process_payment($order_id){
 		$order = new WC_Order($order_id);
 
-		return array
-		(
+		return array(
 			'result' => 'success',
 			'redirect'	=> add_query_arg('order', $order->id, add_query_arg('key', $order->order_key, get_permalink(woocommerce_get_page_id('pay'))))
 		);
@@ -308,8 +276,7 @@ class WC_ROBOKASSA extends WC_Payment_Gateway
 	/**
 	* receipt_page
 	**/
-	function receipt_page($order)
-	{
+	function receipt_page($order){
 		echo '<p>'.__('Спасибо за Ваш заказ, пожалуйста, нажмите кнопку ниже, чтобы заплатить.', 'woocommerce').'</p>';
 		echo $this->generate_form($order);
 	}
@@ -317,8 +284,7 @@ class WC_ROBOKASSA extends WC_Payment_Gateway
 	/**
 	 * Check RoboKassa IPN validity
 	 **/
-	function check_ipn_request_is_valid($posted)
-	{
+	function check_ipn_request_is_valid($posted){
 		$out_summ = $posted['OutSum'];
 		$inv_id = $posted['InvId'];
 		$shp_item = $posted['Shp_item'];
@@ -334,38 +300,29 @@ class WC_ROBOKASSA extends WC_Payment_Gateway
 	/**
 	* Check Response
 	**/
-	function check_ipn_response()
-	{
+	function check_ipn_response(){
 		global $woocommerce;
 
-		if (isset($_GET['robokassa']) AND $_GET['robokassa'] == 'result')
-		{
+		if (isset($_GET['robokassa']) AND $_GET['robokassa'] == 'result'){
 			@ob_clean();
 
 			$_POST = stripslashes_deep($_POST);
 
-			if ($this->check_ipn_request_is_valid($_POST))
-			{
+			if ($this->check_ipn_request_is_valid($_POST)){
             	do_action('valid-robokassa-standard-ipn-reques', $_POST);
 			}
-			else
-			{
+			else{
 				wp_die('IPN Request Failure');
 			}
 		}
-		else if (isset($_GET['robokassa']) AND $_GET['robokassa'] == 'success')
-		{
+		else if (isset($_GET['robokassa']) AND $_GET['robokassa'] == 'success'){
 			$inv_id = $_POST['InvId'];
 			$order = new WC_Order($inv_id);
 			$order->update_status('on-hold', __('Платеж успешно оплачен', 'woocommerce'));
-			// Reduce stock levels
-			$order->reduce_order_stock();
-			$woocommerce->cart->empty_cart();
 			wp_redirect(add_query_arg('key', $order->order_key, add_query_arg('order', $inv_id, get_permalink(get_option('woocommerce_thanks_page_id')))));
 			exit;
 		}
-		else if (isset($_GET['robokassa']) AND $_GET['robokassa'] == 'fail')
-		{
+		else if (isset($_GET['robokassa']) AND $_GET['robokassa'] == 'fail'){
 			$inv_id = $_POST['InvId'];
 			$order = new WC_Order($inv_id);
 			$order->update_status('failed', __('Платеж не оплачен', 'woocommerce'));
@@ -374,14 +331,12 @@ class WC_ROBOKASSA extends WC_Payment_Gateway
 			exit;
 		}
 
-		//echo add_query_arg('key', $order->order_key, add_query_arg('order', $inv_id, get_permalink(get_option('jigoshop_thanks_page_id'))));
 	}
 
 	/**
 	* Successful Payment!
 	**/
-	function successful_request($posted)
-	{
+	function successful_request($posted){
 		global $woocommerce;
 
 		$out_summ = $posted['OutSum'];
@@ -391,13 +346,12 @@ class WC_ROBOKASSA extends WC_Payment_Gateway
 		$order = new WC_Order($inv_id);
 
 		// Check order not already completed
-		if ($order->status == 'completed')
-		{
+		if ($order->status == 'completed'){
 			exit;
 		}
 
 		// Payment completed
-		//$order->add_order_note(__('Платеж успешно завершен.', 'woocommerce'));
+		$order->add_order_note(__('Платеж успешно завершен.', 'woocommerce'));
 		$order->payment_complete();
 		exit;
 	}
@@ -406,13 +360,11 @@ class WC_ROBOKASSA extends WC_Payment_Gateway
 /**
  * Add the gateway to WooCommerce
  **/
-function add_robokassa_gateway($methods)
-{
+function add_robokassa_gateway($methods){
 	$methods[] = 'WC_ROBOKASSA';
 	return $methods;
 }
 
 add_filter('woocommerce_payment_gateways', 'add_robokassa_gateway');
 }
-
- ?>
+?>
