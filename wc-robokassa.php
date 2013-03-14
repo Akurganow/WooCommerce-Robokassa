@@ -3,7 +3,7 @@
   Plugin Name: Robokassa Payment Gateway
   Plugin URI: 
   Description: Allows you to use Robokassa payment gateway with the WooCommerce plugin.
-  Version: 0.8
+  Version: 0.8.2
   Author: Alexander Kurganov
   Author URI: http://akurganow.ru
  */
@@ -42,10 +42,12 @@ function woocommerce_robokassa(){
 class WC_ROBOKASSA extends WC_Payment_Gateway{
 	public function __construct(){
 		
+		$plugin_dir = plugin_dir_url(__FILE__);
+
 		global $woocommerce;
 
 		$this->id = 'robokassa';
-		$this->icon = apply_filters('woocommerce_robokassa_icon', $woocommerce->plugin_url().'robokassa.png');
+		$this->icon = apply_filters('woocommerce_robokassa_icon', ''.$plugin_dir.'robokassa.png');
 		$this->has_fields = false;
     $this->liveurl = 'https://merchant.roboxchange.com/Index.aspx';
 		$this->testurl = 'http://test.robokassa.ru/Index.aspx';
@@ -319,6 +321,10 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 			$inv_id = $_POST['InvId'];
 			$order = new WC_Order($inv_id);
 			$order->update_status('on-hold', __('Платеж успешно оплачен', 'woocommerce'));
+
+		  // Remove cart
+		  $woocommerce->cart->empty_cart();
+
 			wp_redirect(add_query_arg('key', $order->order_key, add_query_arg('order', $inv_id, get_permalink(get_option('woocommerce_thanks_page_id')))));
 			exit;
 		}
