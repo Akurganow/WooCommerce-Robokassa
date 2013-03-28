@@ -6,9 +6,9 @@ Robokassa for WooCommerce
 
 
 В Robokassa прописываем:
-* Result URL: http://your_domain/?robokassa=result
-* Success URL: http://your_domain/?robokassa=success
-* Fail URL: http://your_domain/woocommerce/?robokassa=fail
+* Result URL: http://your_domain/?wc-api=wc_robokassa&robokassa=result
+* Success URL: http://your_domain/?wc-api=wc_robokassa&robokassa=success
+* Fail URL: http://your_domain/woocommerce/?wc-api=wc_robokassa&robokassa=fail
 * Метод отсылки данных: POST
 
 
