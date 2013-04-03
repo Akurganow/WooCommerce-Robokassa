@@ -3,7 +3,7 @@
   Plugin Name: Robokassa Payment Gateway
   Plugin URI: 
   Description: Allows you to use Robokassa payment gateway with the WooCommerce plugin.
-  Version: 0.8.6
+  Version: 0.8.7
   Author: Alexander Kurganov
   Author URI: http://akurganow.ru
  */
@@ -222,10 +222,7 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 				'MrchLogin' => $this->robokassa_merchant,
 				'OutSum' => $out_summ,
 				'InvId' => $order_id,
-				//'Desc' => ,
 				'SignatureValue' => md5($crc),
-				//'Shp_item' => 2,
-				//'IncCurrLabel' => 'PCR',
 				'Culture' => 'ru',
 			);
 
@@ -270,7 +267,6 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 	function check_ipn_request_is_valid($posted){
 		$out_summ = $posted['OutSum'];
 		$inv_id = $posted['InvId'];
-		$shp_item = $posted['Shp_item'];
 		if ($posted['SignatureValue'] == strtoupper(md5($out_summ.':'.$inv_id.':'.$this->robokassa_key2)))
 		{
 			echo 'OK'.$inv_id;
@@ -326,7 +322,6 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 
 		$out_summ = $posted['OutSum'];
 		$inv_id = $posted['InvId'];
-		$shp_item = $posted['Shp_item'];
 
 		$order = new WC_Order($inv_id);
 
