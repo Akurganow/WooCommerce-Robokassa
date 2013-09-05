@@ -1,73 +1,54 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Woocommerce-robokassa by Akurganow</title>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width">
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <h1>Woocommerce-robokassa</h1>
-        <p>Robokassa payments for WooCommerce</p>
+  <title>Robokassa for WooCommerce</title>
 
-        <p class="view"><a href="https://github.com/Akurganow/WooCommerce-Robokassa">View the Project on GitHub <small>Akurganow/WooCommerce-Robokassa</small></a></p>
+  <!-- Flatdoc -->
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src='http://rstacruz.github.io/flatdoc/v/0.8.0/legacy.js'></script>
+  <script src='http://rstacruz.github.io/flatdoc/v/0.8.0/flatdoc.js'></script>
 
+  <!-- Flatdoc theme -->
+  <link  href='http://rstacruz.github.io/flatdoc/v/0.8.0/theme-white/style.css' rel='stylesheet'>
+  <script src='http://rstacruz.github.io/flatdoc/v/0.8.0/theme-white/script.js'></script>
 
-        <ul>
-          <li><a href="https://github.com/Akurganow/WooCommerce-Robokassa/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/Akurganow/WooCommerce-Robokassa/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/Akurganow/WooCommerce-Robokassa">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h1>
-<a name="robokassa" class="anchor" href="#robokassa"><span class="octicon octicon-link"></span></a>Robokassa</h1>
+  <!-- Meta -->
+  <meta content="Robokassa for WooCommerce" property="og:title">
+  <meta content="Плагин для WooCommerce добавляющий в платежные шлюзы робокассу." name="description">
 
-<h2>
-<a name="%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0" class="anchor" href="#%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0"><span class="octicon octicon-link"></span></a>Установка</h2>
+  <!-- Initializer -->
+  <script>
+    Flatdoc.run({
+      fetcher: Flatdoc.github('Akurganow/WooCommerce-Robokassa')
+    });
+  </script>
+</head>
+<body role='flatdoc'>
 
-<h3>
-<a name="%D0%9F%D0%B5%D1%80%D0%B2%D1%8B%D0%B9-%D1%81%D0%BF%D0%BE%D1%81%D0%BE%D0%B1" class="anchor" href="#%D0%9F%D0%B5%D1%80%D0%B2%D1%8B%D0%B9-%D1%81%D0%BF%D0%BE%D1%81%D0%BE%D0%B1"><span class="octicon octicon-link"></span></a>Первый способ</h3>
-
-<ol>
-<li>Убедитесь что у вас установлена посленяя версия плагина <a href="//www.woothemes.com/woocommerce" title="WooCommerce">WooCommerce</a>
-</li>
-<li>Распакуйте архив и загрузите "robokassa-for-woocommerce" в папку ваш-домен/wp-content/plugins</li>
-<li>Активируйте плагин</li>
-</ol><h3>
-<a name="%D0%92%D1%82%D0%BE%D1%80%D0%BE%D0%B9-%D1%81%D0%BF%D0%BE%D1%81%D0%BE%D0%B1" class="anchor" href="#%D0%92%D1%82%D0%BE%D1%80%D0%BE%D0%B9-%D1%81%D0%BF%D0%BE%D1%81%D0%BE%D0%B1"><span class="octicon octicon-link"></span></a>Второй способ</h3>
-
-<p>Установить из официального репозитория WordPress из админки вашего сайта</p>
-
-<h2>
-<a name="%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0" class="anchor" href="#%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0"><span class="octicon octicon-link"></span></a>Настройка</h2>
-
-<p>После активации плагина через панель управления, в настройках WooCommerce, в платежных шлюзах ищем Робокассу и прописывем
-Логин мерчат, пароль 1, пароль 2 узнать их можно в <a href="https://www.roboxchange.com/Environment/Partners/Login/Merchant/Registration.aspx">личном кабинете robokassa</a></p>
-
-<p>В Robokassa прописываем:</p>
-
-<ul>
-<li>Result URL: http://your_domain/?wc-api=wc_robokassa&amp;robokassa=result</li>
-<li>Success URL: http://your_domain/?wc-api=wc_robokassa&amp;robokassa=success</li>
-<li>Fail URL: http://your_domain/?wc-api=wc_robokassa&amp;robokassa=fail</li>
-<li>Метод отсылки данных: POST</li>
-</ul><p>your_domain замените на адрес вашего сайта, например redwood-store.ru</p>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/Akurganow">Akurganow</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
+  <div class='header'>
+    <div class='left'>
+      <h1>Robokassa for WooCommerce</h1>
+      <ul>
+        <li><a href='https://github.com/Akurganow/WooCommerce-Robokassa'>View on GitHub</a></li>
+        <li><a href='https://github.com/Akurganow/WooCommerce-Robokassa/issues'>Issues</a></li>
+      </ul>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
-    
-  </body>
+    <div class='right'>
+      <!-- GitHub buttons: see http://ghbtns.com -->
+      <iframe src="http://ghbtns.com/github-btn.html?user=Akurganow&amp;repo=WooCommerce-Robokassa&amp;type=watch&amp;count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
+    </div>
+  </div>
+
+  <div class='content-root'>
+    <div class='menubar'>
+      <div class='menu section' role='flatdoc-menu'></div>
+    </div>
+    <div role='flatdoc-content' class='content'></div>
+  </div>
+
+</body>
 </html>
