@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Woocommerce-robokassa by Akurganow</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Woocommerce-robokassa</h1>
+        <p>Robokassa payments for WooCommerce</p>
+
+        <p class="view"><a href="https://github.com/Akurganow/WooCommerce-Robokassa">View the Project on GitHub <small>Akurganow/WooCommerce-Robokassa</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/Akurganow/WooCommerce-Robokassa/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/Akurganow/WooCommerce-Robokassa/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/Akurganow/WooCommerce-Robokassa">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="robokassa" class="anchor" href="#robokassa"><span class="octicon octicon-link"></span></a>Robokassa</h1>
+
+<h2>
+<a name="%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0" class="anchor" href="#%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0"><span class="octicon octicon-link"></span></a>Установка</h2>
+
+<h3>
+<a name="%D0%9F%D0%B5%D1%80%D0%B2%D1%8B%D0%B9-%D1%81%D0%BF%D0%BE%D1%81%D0%BE%D0%B1" class="anchor" href="#%D0%9F%D0%B5%D1%80%D0%B2%D1%8B%D0%B9-%D1%81%D0%BF%D0%BE%D1%81%D0%BE%D0%B1"><span class="octicon octicon-link"></span></a>Первый способ</h3>
+
+<ol>
+<li>Убедитесь что у вас установлена посленяя версия плагина <a href="//www.woothemes.com/woocommerce" title="WooCommerce">WooCommerce</a>
+</li>
+<li>Распакуйте архив и загрузите "robokassa-for-woocommerce" в папку ваш-домен/wp-content/plugins</li>
+<li>Активируйте плагин</li>
+</ol><h3>
+<a name="%D0%92%D1%82%D0%BE%D1%80%D0%BE%D0%B9-%D1%81%D0%BF%D0%BE%D1%81%D0%BE%D0%B1" class="anchor" href="#%D0%92%D1%82%D0%BE%D1%80%D0%BE%D0%B9-%D1%81%D0%BF%D0%BE%D1%81%D0%BE%D0%B1"><span class="octicon octicon-link"></span></a>Второй способ</h3>
+
+<p>Установить из официального репозитория WordPress из админки вашего сайта</p>
+
+<h2>
+<a name="%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0" class="anchor" href="#%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0"><span class="octicon octicon-link"></span></a>Настройка</h2>
+
+<p>После активации плагина через панель управления, в настройках WooCommerce, в платежных шлюзах ищем Робокассу и прописывем
+Логин мерчат, пароль 1, пароль 2 узнать их можно в <a href="https://www.roboxchange.com/Environment/Partners/Login/Merchant/Registration.aspx">личном кабинете robokassa</a></p>
+
+<p>В Robokassa прописываем:</p>
+
+<ul>
+<li>Result URL: http://your_domain/?wc-api=wc_robokassa&amp;robokassa=result</li>
+<li>Success URL: http://your_domain/?wc-api=wc_robokassa&amp;robokassa=success</li>
+<li>Fail URL: http://your_domain/?wc-api=wc_robokassa&amp;robokassa=fail</li>
+<li>Метод отсылки данных: POST</li>
+</ul><p>your_domain замените на адрес вашего сайта, например redwood-store.ru</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/Akurganow">Akurganow</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
