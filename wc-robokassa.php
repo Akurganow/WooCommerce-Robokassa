@@ -8,6 +8,8 @@
   Author URI: http://akurganow.ru
  */
 
+//TODO: Выбор платежной системы на стороне магазина
+
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  
  /**
