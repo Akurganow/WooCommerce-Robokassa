@@ -29,7 +29,7 @@ Robokassa
 * Fail URL: http://your_domain/?wc-api=wc_robokassa&robokassa=fail
 * Метод отсылки данных: POST
 
-<small style="color:red;">your_domain замените на адрес вашего сайта, например redwood-store.ru</small>
+your_domain замените на адрес вашего сайта, например redwood-store.ru
 
 ### Changelog
 ##### 0.9
