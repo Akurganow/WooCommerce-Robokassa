@@ -3,10 +3,12 @@
   Plugin Name: Robokassa Payment Gateway
   Plugin URI: 
   Description: Allows you to use Robokassa payment gateway with the WooCommerce plugin.
-  Version: 0.8.7
+  Version: 0.9
   Author: Alexander Kurganov
   Author URI: http://akurganow.ru
  */
+
+//TODO: Выбор платежной системы на стороне магазина
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  
@@ -153,7 +155,7 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 				'robokassa_key1' => array(
 					'title' => __('Пароль #1', 'woocommerce'),
 					'type' => 'password',
-					'description' => __('Пожалуйста введите паоль №1.', 'woocommerce'),
+					'description' => __('Пожалуйста введите пароль №1.', 'woocommerce'),
 					'default' => ''
 				),
 				'robokassa_key2' => array(
@@ -288,7 +290,7 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 			$_POST = stripslashes_deep($_POST);
 
 			if ($this->check_ipn_request_is_valid($_POST)){
-            	do_action('valid-robokassa-standard-ipn-reques', $_POST);
+        do_action('valid-robokassa-standard-ipn-reques', $_POST);
 			}
 			else{
 				wp_die('IPN Request Failure');
@@ -297,11 +299,10 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 		else if (isset($_GET['robokassa']) AND $_GET['robokassa'] == 'success'){
 			$inv_id = $_POST['InvId'];
 			$order = new WC_Order($inv_id);
-			$order->update_status('on-hold', __('Платеж успешно оплачен', 'woocommerce'));
-			$woocommerce->cart->empty_cart();
+			$order->update_status('processing', __('Платеж успешно оплачен', 'woocommerce'));
+			WC()->cart->empty_cart();
 
-			wp_redirect(add_query_arg('key', $order->order_key, add_query_arg('order', $inv_id, get_permalink(get_option('woocommerce_thanks_page_id')))));
-			exit;
+			wp_redirect( $this->get_return_url( $order ) );
 		}
 		else if (isset($_GET['robokassa']) AND $_GET['robokassa'] == 'fail'){
 			$inv_id = $_POST['InvId'];
