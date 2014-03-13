@@ -3,6 +3,8 @@ Robokassa
 
 Плагин для WooCommerce добавляющий в платежные шлюзы робокассу.
 
+![TODOs by CodeNotes](http://codenotes.me/badge/4624048/todos.png)
+
 Установка
 ----------
 
