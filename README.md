@@ -1,9 +1,9 @@
 Robokassa
 ========
 
-Плагин для WooCommerce добавляющий в платежные шлюзы робокассу.
+**Плагин больше не поддерживается, в связи с этим, готов отдать плагин пишите на <a href="mailto:akurganow@gmail.com">akurganow at gmail</a>**
 
-![TODOs by CodeNotes](http://codenotes.me/badge/4624048/todos.png)
+Плагин для WooCommerce добавляющий в платежные шлюзы робокассу.
 
 Установка
 ----------
