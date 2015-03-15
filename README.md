@@ -1,8 +1,6 @@
 Robokassa
 ========
 
-**Плагин больше не поддерживается, в связи с этим, готов отдать плагин пишите на <a href="mailto:akurganow@gmail.com">akurganow at gmail</a>**
-
 Плагин для WooCommerce добавляющий в платежные шлюзы робокассу.
 
 Установка
@@ -34,6 +32,9 @@ Robokassa
 <small style="color:red;">your_domain замените на адрес вашего сайта, например redwood-store.ru</small>
 
 ### Changelog
+##### 1.0.0
+* [Совместимость и WooCommerce 2.3]
+
 ##### 0.9
 * [Совместимость и WooCommerce 2.1.2](https://github.com/Akurganow/WooCommerce-Robokassa/issues/2)
 
