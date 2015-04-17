@@ -17,20 +17,6 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * 
  * @since 0.3
  */
-function robokassa_rub_currency_symbol( $currency_symbol, $currency ) {
-    if($currency == "RUB") {
-        $currency_symbol = 'р.';
-    }
-    return $currency_symbol;
-}
-
-function robokassa_rub_currency( $currencies ) {
-    $currencies["RUB"] = 'Russian Roubles';
-    return $currencies;
-}
-
-add_filter( 'woocommerce_currency_symbol', 'robokassa_rub_currency_symbol', 10, 2 );
-add_filter( 'woocommerce_currencies', 'robokassa_rub_currency', 10, 1 );
 
 
 /* Add a custom payment class to WC
