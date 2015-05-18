@@ -1,9 +1,9 @@
 <?php 
 /*
-  Plugin Name: Robokassa Payment Gateway
+  Plugin Name: Robokassa Payment Gateway (saphali)
   Plugin URI: 
   Description: Allows you to use Robokassa payment gateway with the WooCommerce plugin.
-  Version: 1.0.0
+  Version: 1.0.1
   Author: Alexander Kurganov, Saphali
   Author URI: http://saphali.com
  */
@@ -28,8 +28,13 @@ function woocommerce_robokassa(){
 	if(class_exists('WC_ROBOKASSA'))
 		return;
 class WC_ROBOKASSA extends WC_Payment_Gateway{
+	var $outsumcurrency = '';
+	var $lang;
 	public function __construct(){
-		
+		$woocommerce_currency = get_option('woocommerce_currency');
+		if( in_array($woocommerce_currency, array('EUR', 'USD')) ) {
+			$this->outsumcurrency = $woocommerce_currency;
+		}
 		$plugin_dir = plugin_dir_url(__FILE__);
 
 		global $woocommerce;
@@ -37,7 +42,7 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 		$this->id = 'robokassa';
 		$this->icon = apply_filters('woocommerce_robokassa_icon', ''.$plugin_dir.'robokassa.png');
 		$this->has_fields = false;
-    $this->liveurl = 'https://merchant.roboxchange.com/Index.aspx';
+		$this->liveurl = 'https://merchant.roboxchange.com/Index.aspx';
 		$this->testurl = 'http://test.robokassa.ru/Index.aspx';
 
 		// Load the settings
@@ -50,6 +55,8 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 		$this->robokassa_key1 = $this->get_option('robokassa_key1');
 		$this->robokassa_key2 = $this->get_option('robokassa_key2');
 		$this->testmode = $this->get_option('testmode');
+		$this->lang = $this->get_option('lang');
+		$this->lang = !empty( $this->lang ) ? $this->lang : 'ru';
 		$this->debug = $this->get_option('debug');
 		$this->description = $this->get_option('description');
 		$this->instructions = $this->get_option('instructions');
@@ -76,7 +83,7 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 	 * Check if this gateway is enabled and available in the user's country
 	 */
 	function is_valid_for_use(){
-		if (!in_array(get_option('woocommerce_currency'), array('RUB'))){
+		if (!in_array(get_option('woocommerce_currency'), array('RUB', 'EUR', 'USD') )) {
 			return false;
 		}
 		return true;
@@ -117,6 +124,14 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
   * @return void
   */
 	function init_form_fields(){
+		$debug = __('Включить логирование (<code>woocommerce/logs/' . $this->id . '.txt</code>)', 'woocommerce');
+		if ( !version_compare( WOOCOMMERCE_VERSION, '2.0', '<' ) ) {
+			if ( version_compare( WOOCOMMERCE_VERSION, '2.2.0', '<' ) )
+			$debug = str_replace( $this->id, $this->id . '-' . sanitize_file_name( wp_hash( $this->id ) ), $debug );
+			elseif( function_exists('wc_get_log_file_path') ) {
+				$debug = str_replace( 'woocommerce/logs/' . $this->id . '.txt', wc_get_log_file_path( $this->id ) , $debug );
+			}
+		}
 		$this->form_fields = array(
 				'enabled' => array(
 					'title' => __('Включить/Выключить', 'woocommerce'),
@@ -158,7 +173,7 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 				'debug' => array(
 					'title' => __('Debug', 'woocommerce'),
 					'type' => 'checkbox',
-					'label' => __('Включить логирование (<code>woocommerce/logs/paypal.txt</code>)', 'woocommerce'),
+					'label' => $debug,
 					'default' => 'no'
 				),
 				'description' => array(
@@ -172,6 +187,17 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 					'type' => 'textarea',
 					'description' => __( 'Инструкции, которые будут добавлены на страницу благодарностей.', 'woocommerce' ),
 					'default' => 'Оплата с помощью robokassa.'
+				),
+				'lang' => array(
+					'title' => __( 'Язык общения с клиентом', 'woocommerce' ),
+					'type' => 'select',
+					'options' => array(
+						"" => 'Выбрать',
+						"ru" => "Русский",
+						"en" => "English"
+					),
+					'description' => __( 'Вы определяете изначально сами, на каком языке интерфейс ROBOKASSA должен отображаться для клиента', 'woocommerce' ),
+					'default' => 'ru'
 				)
 			);
 	}
@@ -200,8 +226,10 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 		}
 
 		$out_summ = number_format($order->order_total, 2, '.', '');
-
+		if(empty($this->outsumcurrency))
 		$crc = $this->robokassa_merchant.':'.$out_summ.':'.$order_id.':'.$this->robokassa_key1;
+		else
+		$crc = $this->robokassa_merchant.':'.$out_summ.':'.$order_id.':' . $this->outsumcurrency . ':'.$this->robokassa_key1;
 
 		$args = array(
 				// Merchant
@@ -209,9 +237,11 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 				'OutSum' => $out_summ,
 				'InvId' => $order_id,
 				'SignatureValue' => md5($crc),
-				'Culture' => 'ru',
+				'Culture' => $this->lang,
 			);
-
+		if(!empty($this->outsumcurrency)) {
+			$args['OutSumCurrency'] = $this->outsumcurrency;
+		}
 		$paypal_args = apply_filters('woocommerce_robokassa_args', $args);
 
 		$args_array = array();
@@ -253,7 +283,11 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 	function check_ipn_request_is_valid($posted){
 		$out_summ = $posted['OutSum'];
 		$inv_id = $posted['InvId'];
-		if ($posted['SignatureValue'] == strtoupper(md5($out_summ.':'.$inv_id.':'.$this->robokassa_key2)))
+		if(empty($this->outsumcurrency))
+			$sign = strtoupper(md5($out_summ.':'.$inv_id.':'.$this->robokassa_key2));
+		else
+			$sign = strtoupper(md5($out_summ.':'.$inv_id . ':'.$this->outsumcurrency.':'.$this->robokassa_key2));
+		if ($posted['SignatureValue'] == strtoupper(md5($out_summ.':'.$inv_id.':'.$this->robokassa_key2)) || $posted['SignatureValue'] == $sign)
 		{
 			echo 'OK'.$inv_id;
 			return true;
