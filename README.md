@@ -20,7 +20,7 @@ Robokassa
 ----------
 
 После активации плагина через панель управления, в настройках WooCommerce, в платежных шлюзах ищем Робокассу и прописывем
-Логин мерчат, пароль 1, пароль 2 узнать их можно в [личном кабинете robokassa](https://www.roboxchange.com/Environment/Partners/Login/Merchant/Registration.aspx)
+Логин мерчат (идентификатор магазина), пароль 1, пароль 2 узнать их можно в [личном кабинете robokassa](https://www.roboxchange.com/Environment/Partners/Login/Merchant/Registration.aspx)
 
 
 В Robokassa прописываем:
