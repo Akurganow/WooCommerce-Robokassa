@@ -1,0 +1,169 @@
+# Translation of Development Readme (trunk) in Ukrainian
+# This file is distributed under the same license as the Development Readme (trunk) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2015-12-10 07:54+0300\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 1.8.6\n"
+"Project-Id-Version: Development Readme (trunk)\n"
+"POT-Creation-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: uk\n"
+
+#. Name.
+msgid "Robokassa Payment Gateway (Saphali)"
+msgstr "Платіжний шлюз Robokassa (Saphali)"
+
+#. Short description.
+msgid "Allows you to use Robokassa payment gateway with the WooCommerce plugin."
+msgstr "Дозволяє використовувати платіжний шлюз Robokassa з плагіном WooCommerce."
+
+#. Found in description list item.
+msgid "Result URL: http://your_domain/?wc-api=wc_robokassa&amp;robokassa=result"
+msgstr ""
+
+#. Found in description list item.
+msgid "Success URL: http://your_domain/?wc-api=wc_robokassa&amp;robokassa=success"
+msgstr ""
+
+#. Found in description list item.
+msgid "Fail URL: http://your_domain/?wc-api=wc_robokassa&amp;robokassa=fail"
+msgstr ""
+
+#. Found in description list item.
+msgid "Метод отсылки данных: POST"
+msgstr "Спосіб відправки даних: POST"
+
+#. Found in description paragraph.
+msgid ""
+"После активации плагина через панель управления в WooCommerce прописываем\n"
+"Логин мерчат (идентификатор магазина), пароль 1, пароль 2 узнать их можно в <a href=\"https://www.roboxchange.com/Environment/Partners/Login/Merchant/Registration.aspx\">личном кабинете robokassa</a>"
+msgstr ""
+"Після активації плагіна за допомогою елемента керування панелі в WooCommerce вказуємо\n"
+"Логін мерчант (ідентификатор магазину), пароль 1, пароль 2, про яких можна дізнатися в <a href=\"https://www.roboxchange.com/Environment/Partners/Login/Merchant/Registration.aspx\">особистому кабінеті robokassa</a>"
+
+#. Found in description paragraph.
+msgid "В Robokassa прописываем:"
+msgstr "В Robokassa вказуємо:"
+
+#. Found in description paragraph.
+msgid "Более подробно на <a href=\"http://akurganow.github.io/WooCommerce-Robokassa/\">странице плагина</a>"
+msgstr "Більш докладно на <a href=\"http://akurganow.github.io/WooCommerce-Robokassa/\">сторінці плагіна</a>"
+
+#. Found in description paragraph.
+msgid "Плагин теперь в опенсорсе, кто хочет помочь в его разработке прошу на <a href=\"https://github.com/Akurganow/WooCommerce-Robokassa\">GitHub</a>"
+msgstr "Плагін тепер в opensorse, хто хоче допомогти в його розробці прошу на <a href=\"https://github.com/Akurganow/WooCommerce-Robokassa\">GitHub</a>"
+
+#. Found in description paragraph.
+msgid "Если возникнут проблемы, <a href=\"http://saphali.com/contacts\">сообщите об ошибке</a>"
+msgstr "За наявності будь-яких проблем, будь ласка, <a href=\"http://saphali.com/contacts\">повідомте про помилку</a>"
+
+#. Found in description paragraph.
+msgid "<strong>ВНИМАНИЕ!</strong>"
+msgstr "<strong>УВАГА!</strong>"
+
+#. Found in description paragraph.
+msgid ""
+"Вы можете подключить к магазину все самые популярные российские и украинские платежные системы:\n"
+"QIWI, Приват24, LiqPay, WebMoney, Яндекс.Деньги, Интеркасса, PayPal для России и Украины, Z-payment, ChronoPay!\n"
+"Подробнее о плагинах платежных шлюзов: http://saphali.com/wordpress/payment-gateways"
+msgstr ""
+"Ви можете підключити до магазину всі найпопулярніші російські та українські платіжні системи:\n"
+"QIWI, Приват24, LiqPay, WebMoney, Яндекс гроші, PayPal, Interkassa для Росії і України, Z-payment, ChronoPay!\n"
+"Детальніше про плагіни платіжних шлюзів: http://saphali.com/wordpress/payment-gateways"
+
+#. Found in description paragraph.
+msgid "Другие русские плагины для интернет-магазина на Woocommerce смотрите в нашем каталоге http://saphali.com/wordpress/woocommerce-plugins"
+msgstr "Інші російські плагіни для інтернет-магазину на WooCommerce дивіться в нашому каталозі http://saphali.com/wordpress/woocommerce-plugins"
+
+#. Found in installation list item.
+msgid "Убедитесь что у вас установлена посленяя версия плагина <a href=\"/www.woothemes.com/woocommerce\">WooCommerce</a>"
+msgstr "Переконайтеся, що у вас встановлена остання версія плагіна <a href=\"/www.woothemes.com/woocommerce\">WooCommerce</a>"
+
+#. Found in installation list item.
+msgid "Распакуйте архив и загрузите \"robokassa-payment-gateway-saphali\" в папку ваш-домен/wp-content/plugins"
+msgstr "Розпакуйте архів і завантажте \"robokassa-payment-gateway-saphali\" в в папку ваш-домен/wp-content/plugins"
+
+#. Found in installation list item.
+msgid "Активируйте плагин"
+msgstr "Активувати плагін"
+
+#. Found in changelog list item.
+msgid "Решена проблема с обновлением данных в БД"
+msgstr "Виправлена проблема з оновлення даних у базі даних"
+
+#. Found in changelog list item.
+msgid "Исправления ошибок"
+msgstr "Виправлення помилок"
+
+#. Found in changelog list item.
+msgid "Релиз плагина"
+msgstr "Реліз плагіна"
+
+#. Found in changelog list item.
+msgid "Изменен алгоримт проведения тестового платежа."
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Передача e-mail покупателя Робокассе при оплате."
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Реализована возможность, помимо рубля, использовать евро и доллар."
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Реализована возможность задавать выбор между англ. и русским интерфейсом при оплате на Робокассе."
+msgstr ""
+
+#. Found in changelog list item.
+msgid "[Совместимость c WooCommerce 2.3]"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Убраны дополнительные фильтры для валюты рубля."
+msgstr ""
+
+#. Found in changelog list item.
+msgid "<a href=\"https://github.com/Akurganow/WooCommerce-Robokassa/issues/2\">Совместимость и WooCommerce 2.1.2</a>"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Совместимость с WooCommerce 2"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Добавлены поля description и instructions спасибо пользователю <a href=\"https://twitter.com/vladsg\">@vladsg</a> "
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Сняты ограничения бесплатной версии, плагин теперь бесплатен"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Несколько мелких нововведений"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "И еще немного мелких исправлений"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Еще немного мелких исправлений"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Другие мелкие исправления"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Решена проблема с конфликтующими функциями"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Решена проблема с отображением логотипа робокассы"
+msgstr ""

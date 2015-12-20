@@ -1,0 +1,157 @@
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Project-Id-Version: Robokassa Payment Gateway (Saphali)\n"
+"POT-Creation-Date: 2015-12-10 08:36+0300\n"
+"PO-Revision-Date: 2015-12-10 08:40+0300\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.6\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-WPHeader: wc-robokassa.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"Last-Translator: \n"
+"Language: ru_RU\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: wc-robokassa.php:97 wc-robokassa.php:143
+msgid "ROBOKASSA"
+msgstr ""
+
+#: wc-robokassa.php:98
+msgid "Настройка приема электронных платежей через Merchant ROBOKASSA."
+msgstr ""
+
+#: wc-robokassa.php:111
+msgid "Шлюз отключен"
+msgstr ""
+
+#: wc-robokassa.php:111
+msgid "ROBOKASSA не поддерживает валюты Вашего магазина."
+msgstr ""
+
+#: wc-robokassa.php:124
+msgid "Включить логирование (<code>woocommerce/logs/"
+msgstr ""
+
+#: wc-robokassa.php:134
+msgid "Включить/Выключить"
+msgstr ""
+
+#: wc-robokassa.php:136 wc-robokassa.php:166
+msgid "Включен"
+msgstr ""
+
+#: wc-robokassa.php:140
+msgid "Название"
+msgstr ""
+
+#: wc-robokassa.php:142
+msgid "Это название, которое пользователь видит во время проверки."
+msgstr ""
+
+#: wc-robokassa.php:146
+msgid "Логин"
+msgstr ""
+
+#: wc-robokassa.php:148
+msgid "Пожалуйста введите Логин"
+msgstr ""
+
+#: wc-robokassa.php:152
+msgid "Пароль #1"
+msgstr ""
+
+#: wc-robokassa.php:154
+msgid "Пожалуйста введите пароль №1."
+msgstr ""
+
+#: wc-robokassa.php:158
+msgid "Пароль #2"
+msgstr ""
+
+#: wc-robokassa.php:160
+msgid "Пожалуйста введите пароль №2."
+msgstr ""
+
+#: wc-robokassa.php:164
+msgid "Тест режим"
+msgstr ""
+
+#: wc-robokassa.php:167
+msgid "В этом режиме плата за товар не снимается."
+msgstr ""
+
+#: wc-robokassa.php:171
+msgid "Debug"
+msgstr "Отладка"
+
+#: wc-robokassa.php:177
+msgid "Description"
+msgstr "Описание"
+
+#: wc-robokassa.php:179
+msgid "Описанием метода оплаты которое клиент будет видеть на вашем сайте."
+msgstr ""
+
+#: wc-robokassa.php:183
+msgid "Instructions"
+msgstr "Инструкции"
+
+#: wc-robokassa.php:185
+msgid "Инструкции, которые будут добавлены на страницу благодарностей."
+msgstr ""
+
+#: wc-robokassa.php:189
+msgid "Язык общения с клиентом"
+msgstr ""
+
+#: wc-robokassa.php:196
+msgid ""
+"Вы определяете изначально сами, на каком языке интерфейс ROBOKASSA должен "
+"отображаться для клиента"
+msgstr ""
+
+#: wc-robokassa.php:257
+msgid "Оплатить"
+msgstr ""
+
+#: wc-robokassa.php:257
+msgid "Отказаться от оплаты & вернуться в корзину"
+msgstr ""
+
+#: wc-robokassa.php:281
+msgid "Спасибо за Ваш заказ, пожалуйста, нажмите кнопку ниже, чтобы заплатить."
+msgstr ""
+
+#: wc-robokassa.php:334
+msgid "Платеж не оплачен"
+msgstr ""
+
+#: wc-robokassa.php:359
+msgid "Платеж успешно завершен."
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Robokassa Payment Gateway (Saphali)"
+msgstr "Платежный шлюз Robokassa (Saphali)"
+
+#. Description of the plugin/theme
+msgid ""
+"Allows you to use Robokassa payment gateway with the WooCommerce plugin."
+msgstr "Позволяет использовать платежный шлюз Робокаса с плагином WooCommerce."
+
+#. Author of the plugin/theme
+msgid "Alexander Kurganov, Saphali"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://saphali.com"
+msgstr ""

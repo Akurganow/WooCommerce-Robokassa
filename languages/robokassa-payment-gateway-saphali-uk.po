@@ -1,0 +1,164 @@
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Project-Id-Version: Stable (latest release)\n"
+"POT-Creation-Date: 2015-12-10 07:55+0300\n"
+"PO-Revision-Date: 2015-12-15 10:41+0300\n"
+"Language-Team: Saphali Studio\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.6\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-WPHeader: wc-robokassa.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"Last-Translator: \n"
+"Language: uk\n"
+"Admin Username(s): Saphali\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: wc-robokassa.php:97 wc-robokassa.php:143
+msgid "ROBOKASSA"
+msgstr ""
+
+#: wc-robokassa.php:98
+msgid "Настройка приема электронных платежей через Merchant ROBOKASSA."
+msgstr ""
+"Налаштування прийому електронних платежів за допомогою Merchant ROBOKASSA."
+
+#: wc-robokassa.php:111
+msgid "Шлюз отключен"
+msgstr "Шлюз вимкнуто"
+
+#: wc-robokassa.php:111
+msgid "ROBOKASSA не поддерживает валюты Вашего магазина."
+msgstr "ROBOKASSA не підтримує валюту Вашого магазину."
+
+#: wc-robokassa.php:124
+msgid "Включить логирование (<code>woocommerce/logs/"
+msgstr "Увімкнути журналювання (<code>woocommerce/logs/</code>"
+
+#: wc-robokassa.php:134
+msgid "Включить/Выключить"
+msgstr "Увімкнути/вимкнути"
+
+#: wc-robokassa.php:136 wc-robokassa.php:166
+msgid "Включен"
+msgstr "Увімкнено"
+
+#: wc-robokassa.php:140
+msgid "Название"
+msgstr "Назва"
+
+#: wc-robokassa.php:142
+msgid "Это название, которое пользователь видит во время проверки."
+msgstr "Це назва, яку користувач бачить під час оплати."
+
+#: wc-robokassa.php:146
+msgid "Логин"
+msgstr "Логін"
+
+#: wc-robokassa.php:148
+msgid "Пожалуйста введите Логин"
+msgstr "Будь ласка, введіть Логін"
+
+#: wc-robokassa.php:152
+msgid "Пароль #1"
+msgstr ""
+
+#: wc-robokassa.php:154
+msgid "Пожалуйста введите пароль №1."
+msgstr "Будь ласка, введіть пароль № 1."
+
+#: wc-robokassa.php:158
+msgid "Пароль #2"
+msgstr ""
+
+#: wc-robokassa.php:160
+msgid "Пожалуйста введите пароль №2."
+msgstr "Будь ласка, введіть пароль № 2."
+
+#: wc-robokassa.php:164
+msgid "Тест режим"
+msgstr "Тестовий режим"
+
+#: wc-robokassa.php:167
+msgid "В этом режиме плата за товар не снимается."
+msgstr "У цьому режимі плата за товар не знімається."
+
+#: wc-robokassa.php:171
+msgid "Debug"
+msgstr "Налагодження"
+
+#: wc-robokassa.php:177
+msgid "Description"
+msgstr "Опис"
+
+#: wc-robokassa.php:179
+msgid "Описанием метода оплаты которое клиент будет видеть на вашем сайте."
+msgstr "Опис методу платежу, що ви побачите на вашому сайті."
+
+#: wc-robokassa.php:183
+msgid "Instructions"
+msgstr "Інструкції"
+
+#: wc-robokassa.php:185
+msgid "Инструкции, которые будут добавлены на страницу благодарностей."
+msgstr "Інструкції, які будуть додані до сторінку подяк."
+
+#: wc-robokassa.php:189
+msgid "Язык общения с клиентом"
+msgstr "Мовою спілкування з клієнтом"
+
+#: wc-robokassa.php:196
+msgid ""
+"Вы определяете изначально сами, на каком языке интерфейс ROBOKASSA должен "
+"отображаться для клиента"
+msgstr ""
+"Ви визначаєте спочатку самі, якою мовою інтерфейс ROBOKASSA повинен "
+"відображатися для клієнта"
+
+#: wc-robokassa.php:257
+msgid "Оплатить"
+msgstr "Сплатити"
+
+#: wc-robokassa.php:257
+msgid "Отказаться от оплаты & вернуться в корзину"
+msgstr "Відмовитися від оплати і повернутися в кошик"
+
+#: wc-robokassa.php:281
+msgid "Спасибо за Ваш заказ, пожалуйста, нажмите кнопку ниже, чтобы заплатить."
+msgstr ""
+"Дякуємо вам за ваше замовлення, будь ласка, натисніть кнопку нижче, щоб "
+"заплатити."
+
+#: wc-robokassa.php:334
+msgid "Платеж не оплачен"
+msgstr "Платіж не буде сплачений"
+
+#: wc-robokassa.php:359
+msgid "Платеж успешно завершен."
+msgstr "Платіж успішно завершено."
+
+#. Plugin Name of the plugin/theme
+msgid "Robokassa Payment Gateway (Saphali)"
+msgstr "Платіжний шлюз Robokassa (Saphali)"
+
+#. Description of the plugin/theme
+msgid ""
+"Allows you to use Robokassa payment gateway with the WooCommerce plugin."
+msgstr ""
+"Дозволяє використовувати платіжний шлюз Robokassa з плагіном WooCommerce."
+
+#. Author of the plugin/theme
+msgid "Alexander Kurganov, Saphali"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://saphali.com"
+msgstr ""
