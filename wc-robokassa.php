@@ -148,7 +148,7 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 				'robokassa_merchant' => array(
 					'title' => __('Идентификатор магазина', 'robokassa-payment-gateway-saphali'),
 					'type' => 'text',
-					'description' => __('Пожалуйста введите Логин', 'robokassa-payment-gateway-saphali'),
+					'description' => __('Пожалуйста введите идентификатор магазина', 'robokassa-payment-gateway-saphali'),
 					'default' => 'demo'
 				),
 				'robokassa_key1' => array(
