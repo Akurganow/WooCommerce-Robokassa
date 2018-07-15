@@ -3,6 +3,9 @@
 class WC_ROBOKASSA extends WC_Payment_Gateway {
 	var $outsumcurrency = '';
 	var $lang;
+	var $liveurl = 'https://auth.robokassa.ru/Merchant/Index.aspx';
+	var $only_bankcard = 'no';
+	var $testmode = 'no';
 
 	public function __construct() {
 		$woocommerce_currency = get_option( 'woocommerce_currency' );
@@ -16,21 +19,20 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 		$this->id         = 'robokassa';
 		$this->icon       = apply_filters( 'woocommerce_robokassa_icon', '' . $plugin_dir . 'robokassa.png' );
 		$this->has_fields = false;
-		$this->liveurl    = 'https://auth.robokassa.ru/Merchant/Index.aspx';
-		//$this->testurl = 'http://test.robokassa.ru/Index.aspx';
 
 		// Load the settings
 		$this->init_form_fields();
 		$this->init_settings();
 
 		// Define user set variables
+		$this->method_title       = __( 'Robokassa', 'woocommerce' );
 		$this->title              = $this->get_option( 'title' );
+		$this->only_bankcard      = $this->get_option( 'only_bankcard' );
 		$this->robokassa_merchant = $this->get_option( 'robokassa_merchant' );
 		$this->robokassa_key1     = $this->get_option( 'robokassa_key1' );
 		$this->robokassa_key2     = $this->get_option( 'robokassa_key2' );
 		$this->testmode           = $this->get_option( 'testmode' );
-		$this->lang               = $this->get_option( 'lang' );
-		$this->lang               = ! empty( $this->lang ) ? $this->lang : 'ru';
+		$this->lang               = $this->get_option( 'lang', 'ru' );
 		$this->debug              = $this->get_option( 'debug' );
 		$this->description        = $this->get_option( 'description' );
 		$this->instructions       = $this->get_option( 'instructions' );
@@ -93,6 +95,14 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 				'description' => __( 'Это название, которое пользователь видит во время проверки.',
 					'robokassa-payment-gateway-saphali' ),
 				'default'     => __( 'ROBOKASSA', 'robokassa-payment-gateway-saphali' )
+			),
+			'only_bankcard'      => array(
+				'title'       => __( 'Принимать только банковские карты', 'robokassa-payment-gateway-saphali' ),
+				'type'        => 'checkbox',
+				'label'       => __( 'Включен', 'robokassa-payment-gateway-saphali' ),
+				'description' => __( 'Пользователь будет переадресован на форму оплаты банковскими картами. Но сможет вернуться и выбрать другой тип оплаты.',
+					'robokassa-payment-gateway-saphali' ),
+				'default'     => 'no'
 			),
 			'robokassa_merchant' => array(
 				'title'       => __( 'Идентификатор магазина', 'robokassa-payment-gateway-saphali' ),
@@ -191,22 +201,33 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 	 **/
 	public function admin_options() {
 		?>
-		<h3><?php _e( 'ROBOKASSA', 'robokassa-payment-gateway-saphali' ); ?></h3>
-		<p><?php _e( 'Настройка приема электронных платежей через Merchant ROBOKASSA.',
+        <h3><?php _e( 'ROBOKASSA', 'robokassa-payment-gateway-saphali' ); ?></h3>
+        <p><?php _e( 'Настройка приема электронных платежей через Merchant ROBOKASSA.',
 				'robokassa-payment-gateway-saphali' ); ?></p>
+
+        <div class="notice notice-info">
+            <p>Настройки магазина на сайте <a href="https://partner.robokassa.ru" target="_blank">Robokassa</a>:</p>
+            <ul>
+                <li>Алгоритм расчета хеша: <b>SHA256</b></li>
+                <li>Метод отсылки данных: <b>POST</b></li>
+                <li>Result URL: <b><?= home_url(); ?>/?wc-api=wc_robokassa&robokassa=result</b></li>
+                <li>Success URL: <b><?= home_url(); ?>/?wc-api=wc_robokassa&robokassa=success</b></li>
+                <li>Fail URL: <b><?= home_url(); ?>/?wc-api=wc_robokassa&robokassa=fail</b></li>
+            </ul>
+        </div>
 
 		<?php if ( $this->is_valid_for_use() ) : ?>
 
-			<table class="form-table">
+            <table class="form-table">
 
 				<?php
 				// Generate the HTML For the settings form.
 				$this->generate_settings_html();
 				?>
-			</table><!--/.form-table-->
+            </table><!--/.form-table-->
 
 		<?php else : ?>
-			<div class="inline error"><p><strong><?php _e( 'Шлюз отключен',
+            <div class="inline error"><p><strong><?php _e( 'Шлюз отключен',
 							'robokassa-payment-gateway-saphali' ); ?></strong>: <?php _e( 'ROBOKASSA не поддерживает валюты Вашего магазина.',
 						'robokassa-payment-gateway-saphali' ); ?></p></div>
 			<?php
@@ -246,9 +267,9 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 	 * receipt_page
 	 **/
 	function receipt_page( $order_id ) {
-		echo '<p>' . __( 'Спасибо за Ваш заказ, пожалуйста, нажмите кнопку ниже, чтобы заплатить.',
-				'robokassa-payment-gateway-saphali' ) . '</p>';
+		echo '<p>' . __( 'Для оплаты заказа нажмите кнопку ОПЛАТИТЬ.', 'robokassa-payment-gateway-saphali' ) . '</p>';
 		echo $this->generate_form( $order_id );
+		do_action( 'woocommerce_view_order', $order_id );
 	}
 
 	/**
@@ -272,10 +293,13 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 			'MrchLogin'      => $this->robokassa_merchant,
 			'OutSum'         => $out_summ,
 			'InvId'          => $order_id,
-			'SignatureValue' => md5( $crc ),
+			'SignatureValue' => hash( 'sha256', $crc ),
 			'Culture'        => $this->lang,
 			'Encoding'       => 'utf-8',
 		);
+		if ( $this->only_bankcard == 'yes' ) {
+			$args['IncCurrLabel'] = 'BankCard';
+		}
 		if ( ! empty( $order->get_billing_email() ) ) {
 			$args['Email'] = $order->get_billing_email();
 		}
