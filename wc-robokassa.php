@@ -305,9 +305,11 @@ function woocommerce_robokassa() {
 			return
 				'<form action="' . esc_url( $action_adr ) . '" method="POST" id="robokassa_payment_form">' . "\n" .
 				implode( "\n", $args_array ) .
-				'<input type="submit" class="button alt" id="submit_robokassa_payment_form" value="' . __( 'Оплатить',
-					'robokassa-payment-gateway-saphali' ) . '" /> <a class="button cancel" href="'
-				. $order->get_cancel_order_url() . '">' . __( 'Отказаться от оплаты & вернуться в корзину',
+				'<input type="submit" class="fusion-button button-default fusion-button-default-size button alt" id="submit_robokassa_payment_form" value="'
+				. __( 'Оплатить',
+					'robokassa-payment-gateway-saphali' )
+				. '" /> <a class="fusion-button button-default fusion-button-default-size button-red button cancel" href="'
+				. $order->get_cancel_order_url() . '">' . __( 'Вернуться в корзину',
 					'robokassa-payment-gateway-saphali' ) . '</a>' . "\n" .
 				'</form>';
 		}
@@ -334,10 +336,10 @@ function woocommerce_robokassa() {
 		/**
 		 * receipt_page
 		 **/
-		function receipt_page( $order ) {
+		function receipt_page( $order_id ) {
 			echo '<p>' . __( 'Спасибо за Ваш заказ, пожалуйста, нажмите кнопку ниже, чтобы заплатить.',
 					'robokassa-payment-gateway-saphali' ) . '</p>';
-			echo $this->generate_form( $order );
+			echo $this->generate_form( $order_id );
 		}
 
 		/**
