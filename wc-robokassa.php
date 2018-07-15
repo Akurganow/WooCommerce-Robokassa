@@ -3,11 +3,12 @@
   Plugin Name: Robokassa Payment Gateway (Saphali)
   Plugin URI: 
   Description: Allows you to use Robokassa payment gateway with the WooCommerce plugin.
-  Version: 1.0.5
+  Version: 1.0.6
   Author: Alexander Kurganov, Saphali
   Author URI: http://saphali.com
   Text Domain: robokassa-payment-gateway-saphali
   Domain Path: /languages
+  Github: https://github.com/Akurganow/WooCommerce-Robokassa
  */
 
 //TODO: Выбор платежной системы на стороне магазина
