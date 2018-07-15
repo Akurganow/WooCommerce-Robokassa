@@ -259,7 +259,7 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 		return array(
 			'result'   => 'success',
 			'redirect' => add_query_arg( 'order-pay', $order->id,
-				add_query_arg( 'key', $order->order_key, get_permalink( woocommerce_get_page_id( 'pay' ) ) ) )
+				add_query_arg( 'key', $order->order_key, get_permalink( wc_get_page_id( 'pay' ) ) ) )
 		);
 	}
 
@@ -354,6 +354,7 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 			WC()->cart->empty_cart();
 
 			wp_redirect( $this->get_return_url( $order ) );
+			exit;
 		} else if ( isset( $_GET['robokassa'] ) AND $_GET['robokassa'] == 'fail' ) {
 			$inv_id = $_POST['InvId'];
 			$order  = new WC_Order( $inv_id );
