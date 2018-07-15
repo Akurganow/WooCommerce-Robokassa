@@ -262,13 +262,11 @@ function woocommerce_robokassa() {
 		 * Generate the dibs button link
 		 **/
 		public function generate_form( $order_id ) {
-			global $woocommerce;
-
 			$order      = new WC_Order( $order_id );
 			$action_adr = $this->liveurl;
 
 
-			$out_summ = number_format( $order->order_total, 2, '.', '' );
+			$out_summ = number_format( $order->get_total(), 2, '.', '' );
 			if ( empty( $this->outsumcurrency ) ) {
 				$crc = $this->robokassa_merchant . ':' . $out_summ . ':' . $order_id . ':' . $this->robokassa_key1;
 			} else {
@@ -285,8 +283,8 @@ function woocommerce_robokassa() {
 				'Culture'        => $this->lang,
 				'Encoding'       => 'utf-8',
 			);
-			if ( ! empty( $order->billing_email ) ) {
-				$args['Email'] = $order->billing_email;
+			if ( ! empty( $order->get_billing_email() ) ) {
+				$args['Email'] = $order->get_billing_email();
 			}
 			if ( $this->testmode == 'yes' ) {
 				//$action_adr = $this->testurl;
