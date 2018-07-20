@@ -279,10 +279,11 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 		$order      = new WC_Order( $order_id );
 		$action_adr = $this->liveurl;
 
-
+		$receipt  = $this->get_order_receipt( $order_id );
 		$out_summ = number_format( $order->get_total(), 2, '.', '' );
 		if ( empty( $this->outsumcurrency ) ) {
-			$crc = $this->robokassa_merchant . ':' . $out_summ . ':' . $order_id . ':' . $this->robokassa_key1;
+			$crc = $this->robokassa_merchant . ':' . $out_summ . ':' . $order_id . ':' . $receipt . ':'
+			       . $this->robokassa_key1;
 		} else {
 			$crc = $this->robokassa_merchant . ':' . $out_summ . ':' . $order_id . ':' . $this->outsumcurrency . ':'
 			       . $this->robokassa_key1;
@@ -293,6 +294,8 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 			'MrchLogin'      => $this->robokassa_merchant,
 			'OutSum'         => $out_summ,
 			'InvId'          => $order_id,
+			'InvDesc'        => $this->get_order_description( $order_id ),
+			'Receipt'        => $receipt,
 			'SignatureValue' => hash( 'sha256', $crc ),
 			'Culture'        => $this->lang,
 			'Encoding'       => 'utf-8',
@@ -304,7 +307,6 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 			$args['Email'] = $order->get_billing_email();
 		}
 		if ( $this->testmode == 'yes' ) {
-			//$action_adr = $this->testurl;
 			$args['IsTest'] = 1;
 		}
 		if ( ! empty( $this->outsumcurrency ) ) {
@@ -329,6 +331,115 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 			. $order->get_cancel_order_url() . '">' . __( 'Вернуться в корзину',
 				'robokassa-payment-gateway-saphali' ) . '</a>' . "\n" .
 			'</form>';
+	}
+
+	function get_order_receipt( $order_id, $max_length = 100 ) {
+		/**
+		 * Return JSON string with order receipt
+		 *
+		 * {
+		 * "sno": "osn",
+		 * "items": [
+		 * {
+		 * "name": "Название товара 1",
+		 * "quantity": 1.0,
+		 * "sum": 100.0,
+		 * "tax": "vat10"
+		 * },
+		 * {
+		 * "name": "Название товара 2",
+		 * "quantity": 3,
+		 * "sum": 450,
+		 * "tax": "vat118"
+		 * }
+		 * ]
+		 * }
+		 *
+		 * sno
+		 * «osn» – общая СН;
+		 * «usn_income» – упрощенная СН (доходы);
+		 * «usn_income_outcome» – упрощенная СН (доходы минус расходы);
+		 * «envd» – единый налог на вмененный доход;
+		 * «esn» – единый сельскохозяйственный налог;
+		 * «patent» – патентная СН.
+		 *
+		 * tax
+		 * «none» – без НДС;
+		 * «vat0» – НДС по ставке 0%;
+		 * «vat10» – НДС чека по ставке 10%;
+		 * «vat18» – НДС чека по ставке 18%;
+		 * «vat110» – НДС чека по расчетной ставке 10/110;
+		 * «vat118» – НДС чека по расчетной ставке 18/118.
+		 */
+		$order = wc_get_order( $order_id );
+
+		$items = [];
+		// The loop to get the order items which are WC_Order_Item_Product objects since WC 3+
+		foreach ( $order->get_items() as $item_id => $item_product ) {
+			//Get the product ID
+			$product_id = $item_product->get_product_id();
+
+			$description = $item_product->get_name();
+			$category    = '';
+			$categories  = get_the_terms( $product_id, 'product_cat' );
+			if ( ! empty( $categories ) ) {
+				$category = $categories[0]->name;
+			}
+			$by_categories[ $category ][] = $description;
+
+			$items[] = [
+				'name'     => ( ! empty( $category ) ? $category . ': ' : '' ) . $item_product->get_name(),
+				'quantity' => $item_product->get_quantity(),
+				'sum'      => $item_product->get_total(),
+				'tax'      => 'none'
+			];
+
+		}
+
+		$receipt = [
+			'sno'   => 'usn_income',
+			'items' => $items,
+		];
+
+		return json_encode( $receipt, JSON_UNESCAPED_UNICODE );
+	}
+
+	function get_order_description( $order_id, $max_length = 100 ) {
+		/**
+		 * Return string with order description generated from items
+		 *
+		 */
+		$order = wc_get_order( $order_id );
+
+		$by_categories = [];
+		// The loop to get the order items which are WC_Order_Item_Product objects since WC 3+
+		foreach ( $order->get_items() as $item_id => $item_product ) {
+			//Get the product ID
+			$product_id = $item_product->get_product_id();
+
+			$description = $item_product->get_name();
+			$category    = '';
+			$categories  = get_the_terms( $product_id, 'product_cat' );
+			if ( ! empty( $categories ) ) {
+				$category = $categories[0]->name;
+			}
+			$by_categories[ $category ][] = $description;
+
+		}
+
+		$description = '';
+		foreach ( $by_categories as $category => $products ) {
+			$description .= ( ! empty( $category ) ? $category . ': ' : '' ) . implode( '; ', $products );
+		}
+		if ( strlen( $description ) > $max_length ) {
+			$description = implode(
+				' ',
+				array_slice(
+					explode( ' ', substr( $description, 0, $max_length - 1 ) ),
+					0, - 1 ) );
+		}
+
+		return $description;
 	}
 
 	/**
