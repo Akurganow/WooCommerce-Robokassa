@@ -47,7 +47,7 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 		}
 
 		// Actions
-		add_action( 'valid-robokassa-standard-ipn-reques', array( $this, 'successful_request' ) );
+		add_action( 'valid-robokassa-standard-ipn-request', array( $this, 'successful_request' ) );
 		add_action( 'woocommerce_receipt_' . $this->id, array( $this, 'receipt_page' ) );
 
 		// Save options
@@ -69,12 +69,11 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 	 * @return void
 	 */
 	function init_form_fields() {
-		$debug = __( 'Включить логирование (<code>woocommerce/logs/' . $this->id . '.txt</code>)',
-			'robokassa-payment-gateway-saphali' );
+		$debug = __( 'Включить логирование', 'robokassa-payment-gateway-saphali' )
+		         . ' (<code>woocommerce/logs/' . $this->id . '.txt</code>)';
 		if ( ! version_compare( WOOCOMMERCE_VERSION, '2.0', '<' ) ) {
 			if ( version_compare( WOOCOMMERCE_VERSION, '2.2.0', '<' ) ) {
-				$debug =
-					str_replace( $this->id, $this->id . '-' . sanitize_file_name( wp_hash( $this->id ) ), $debug );
+				$debug = str_replace( $this->id, $this->id . '-' . sanitize_file_name( wp_hash( $this->id ) ), $debug );
 			} elseif ( function_exists( 'wc_get_log_file_path' ) ) {
 				$debug = str_replace( 'woocommerce/logs/' . $this->id . '.txt',
 					'<a href="/wp-admin/admin.php?page=wc-status&tab=logs&log_file=' . $this->id . '-'
@@ -446,15 +445,13 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 	 * Check Response
 	 **/
 	function check_ipn_response() {
-		global $woocommerce;
-
 		if ( isset( $_GET['robokassa'] ) AND $_GET['robokassa'] == 'result' ) {
 			@ob_clean();
 
 			$_POST = stripslashes_deep( $_POST );
 
 			if ( $this->check_ipn_request_is_valid( $_POST ) ) {
-				do_action( 'valid-robokassa-standard-ipn-reques', $_POST );
+				do_action( 'valid-robokassa-standard-ipn-request', $_POST );
 			} else {
 				wp_die( 'IPN Request Failure' );
 			}
@@ -484,14 +481,14 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 		$out_summ = $posted['OutSum'];
 		$inv_id   = $posted['InvId'];
 		if ( empty( $this->outsumcurrency ) ) {
-			$sign = strtoupper( md5( $out_summ . ':' . $inv_id . ':' . $this->robokassa_key2 ) );
+			$sign = strtoupper( hash( 'sha256', $out_summ . ':' . $inv_id . ':' . $this->robokassa_key2 ) );
 		} else {
-			$sign = strtoupper( md5( $out_summ . ':' . $inv_id . ':' . $this->outsumcurrency . ':'
-			                         . $this->robokassa_key2 ) );
+			$sign = strtoupper( hash( 'sha256', $out_summ . ':' . $inv_id . ':' . $this->outsumcurrency . ':'
+			                                    . $this->robokassa_key2 ) );
 		}
 
-		if ( $posted['SignatureValue'] == strtoupper( md5( $out_summ . ':' . $inv_id . ':'
-		                                                   . $this->robokassa_key2 ) )
+		if ( $posted['SignatureValue'] == strtoupper(
+				hash( 'sha256', $out_summ . ':' . $inv_id . ':' . $this->robokassa_key2 ) )
 		     || $posted['SignatureValue'] == $sign ) {
 			echo 'OK' . $inv_id;
 
@@ -505,10 +502,8 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 	 * Successful Payment!
 	 **/
 	function successful_request( $posted ) {
-		global $woocommerce;
-
-		$out_summ = $posted['OutSum'];
-		$inv_id   = $posted['InvId'];
+		// $out_summ = $posted['OutSum'];
+		$inv_id = $posted['InvId'];
 
 		$order = new WC_Order( $inv_id );
 
