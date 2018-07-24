@@ -278,10 +278,12 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 		$order      = new WC_Order( $order_id );
 		$action_adr = $this->liveurl;
 
-		$receipt  = $this->get_order_receipt( $order_id );
+		$receipt = $this->get_order_receipt( $order_id );
+		$this->log_data( $receipt );
+
 		$out_summ = number_format( $order->get_total(), 2, '.', '' );
 		if ( empty( $this->outsumcurrency ) ) {
-			$crc = $this->robokassa_merchant . ':' . $out_summ . ':' . $order_id . ':' . $receipt . ':'
+			$crc = $this->robokassa_merchant . ':' . $out_summ . ':' . $order_id . ':' . urlencode( $receipt ) . ':'
 			       . $this->robokassa_key1;
 		} else {
 			$crc = $this->robokassa_merchant . ':' . $out_summ . ':' . $order_id . ':' . $this->outsumcurrency . ':'
@@ -386,8 +388,11 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 			}
 			$by_categories[ $category ][] = $description;
 
+
 			$items[] = [
-				'name'     => ( ! empty( $category ) ? $category . ': ' : '' ) . $item_product->get_name(),
+				'name'     => $this->cut_words(
+					( ! empty( $category ) ? $category . ': ' : '' ) . $item_product->get_name(),
+					$max_length = 64 ),
 				'quantity' => $item_product->get_quantity(),
 				'sum'      => $item_product->get_total(),
 				'tax'      => 'none'
@@ -403,7 +408,26 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 		return json_encode( $receipt, JSON_UNESCAPED_UNICODE );
 	}
 
-	function get_order_description( $order_id, $max_length = 100 ) {
+	function cut_words( $words, $max_length = 100 ) {
+		if ( strlen( $words ) > $max_length ) {
+			$words = implode(
+				' ',
+				array_slice(
+					explode( ' ', substr( $words, 0, $max_length - 1 ) ),
+					0, - 1 ) );
+		}
+
+		return $words;
+	}
+
+	function log_data( $data ) {
+		if ( $this->debug && ! empty( MIND_PATH_TMP ) ) {
+			$data = "\n" . date( 'Y-m-d H:i:s' ) . "\t" . $data;
+			file_put_contents( MIND_PATH_TMP . "woo-robokassa.log", $data, FILE_APPEND );
+		}
+	}
+
+	function get_order_description( $order_id ) {
 		/**
 		 * Return string with order description generated from items
 		 *
@@ -430,15 +454,8 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 		foreach ( $by_categories as $category => $products ) {
 			$description .= ( ! empty( $category ) ? $category . ': ' : '' ) . implode( '; ', $products );
 		}
-		if ( strlen( $description ) > $max_length ) {
-			$description = implode(
-				' ',
-				array_slice(
-					explode( ' ', substr( $description, 0, $max_length - 1 ) ),
-					0, - 1 ) );
-		}
 
-		return $description;
+		return $this->cut_words( $description, $max_length = 100 );
 	}
 
 	/**
