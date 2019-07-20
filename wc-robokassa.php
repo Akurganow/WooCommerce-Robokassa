@@ -53,4 +53,3 @@ function woocommerce_robokassa() {
 	add_filter( 'woocommerce_payment_gateways', 'add_robokassa_gateway' );
 }
 
-?>
