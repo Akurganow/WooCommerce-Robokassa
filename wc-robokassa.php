@@ -39,7 +39,7 @@ function woocommerce_robokassa() {
 	/**
 	 * Gateway class load
 	 */
-	include_once dirname(__FILE__) . '/class-wc-robokassa.php';
+	include_once dirname( __FILE__ ) . '/class-wc-robokassa.php';
 
 	/**
 	 * Add the gateway to WooCommerce
