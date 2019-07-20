@@ -273,6 +273,8 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 
 	/**
 	 * Generate the dibs button link
+	 *
+	 * Docs:
 	 **/
 	public function generate_form( $order_id ) {
 		$order      = new WC_Order( $order_id );
@@ -281,7 +283,7 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 		$receipt = $this->get_order_receipt( $order_id );
 		$this->log_data( $receipt );
 
-		$out_summ = number_format( $order->get_total(), 2, '.', '' );
+		$out_summ = (float) $order->get_total();
 		if ( empty( $this->outsumcurrency ) ) {
 			$crc = $this->robokassa_merchant . ':' . $out_summ . ':' . $order_id . ':' . urlencode( $receipt ) . ':'
 			       . $this->robokassa_key1;
@@ -296,11 +298,13 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 			'OutSum'         => $out_summ,
 			'InvId'          => $order_id,
 			'InvDesc'        => $this->get_order_description( $order_id ),
-			'Receipt'        => $receipt,
+			'Receipt'        => urlencode( $receipt ),
 			'SignatureValue' => hash( 'sha256', $crc ),
 			'Culture'        => $this->lang,
 			'Encoding'       => 'utf-8',
 		);
+		$this->log_data( $args );
+
 		if ( $this->only_bankcard == 'yes' ) {
 			$args['IncCurrLabel'] = 'BankCard';
 		}
@@ -388,13 +392,13 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 			}
 			$by_categories[ $category ][] = $description;
 
-
+			// ( ! empty( $category ) ? $category . ': ' : '' ) .
 			$items[] = [
 				'name'     => $this->cut_words(
-					( ! empty( $category ) ? $category . ': ' : '' ) . $item_product->get_name(),
+					strtr( $item_product->get_name(), [ '.' => '', ',' => '' ] ),
 					$max_length = 64 ),
-				'quantity' => $item_product->get_quantity(),
-				'sum'      => $item_product->get_total(),
+				'quantity' => (int) $item_product->get_quantity(),
+				'sum'      => (float) $item_product->get_total(),
 				'tax'      => 'none'
 			];
 
@@ -422,7 +426,7 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 
 	function log_data( $data ) {
 		if ( $this->debug && ! empty( MIND_PATH_TMP ) ) {
-			$data = "\n" . date( 'Y-m-d H:i:s' ) . "\t" . $data;
+			$data = "\n" . date( 'Y-m-d H:i:s' ) . "\t" . var_export( $data, true );
 			file_put_contents( MIND_PATH_TMP . "woo-robokassa.log", $data, FILE_APPEND );
 		}
 	}
@@ -452,7 +456,8 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 
 		$description = '';
 		foreach ( $by_categories as $category => $products ) {
-			$description .= ( ! empty( $category ) ? $category . ': ' : '' ) . implode( '; ', $products );
+			//$description .= ( ! empty( $category ) ? $category . ': ' : '' ) . implode( ', ', $products );
+			$description .= implode( ', ', $products );
 		}
 
 		return $this->cut_words( $description, $max_length = 100 );
