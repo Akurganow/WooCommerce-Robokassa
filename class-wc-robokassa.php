@@ -372,9 +372,9 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 		 * «none» – без НДС;
 		 * «vat0» – НДС по ставке 0%;
 		 * «vat10» – НДС чека по ставке 10%;
-		 * «vat18» – НДС чека по ставке 18%;
+		 * «vat12» – НДС чека по ставке 20%;
 		 * «vat110» – НДС чека по расчетной ставке 10/110;
-		 * «vat118» – НДС чека по расчетной ставке 18/118.
+		 * «vat120» – НДС чека по расчетной ставке 20/120.
 		 */
 		$order = wc_get_order( $order_id );
 
@@ -394,16 +394,19 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 
 			// ( ! empty( $category ) ? $category . ': ' : '' ) .
 			$items[] = [
-				'name'     => $this->cut_words(
+				'name'           => $this->cut_words(
 					strtr( $item_product->get_name(), [ '.' => '', ',' => '' ] ),
 					$max_length = 64 ),
-				'quantity' => (int) $item_product->get_quantity(),
-				'sum'      => (float) $item_product->get_total(),
-				'tax'      => 'none'
+				'quantity'       => (int) $item_product->get_quantity(),
+				'sum'            => (float) $item_product->get_total(),
+				'tax'            => 'none',
+				'payment_method' => 'full_prepayment',
+				// 'payment_object' => 'service', // not necessary
 			];
 
 		}
 
+		// Always use USN Income
 		$receipt = [
 			'sno'   => 'usn_income',
 			'items' => $items,
