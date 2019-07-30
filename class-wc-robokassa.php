@@ -6,6 +6,12 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 	var $liveurl = 'https://auth.robokassa.ru/Merchant/Index.aspx';
 	var $only_bankcard = 'no';
 	var $testmode = 'no';
+	var $debug = 'no';
+	private $robokassa_merchant;
+	private $robokassa_key1;
+	private $robokassa_key2;
+	private $instructions;
+	private $log;
 
 	public function __construct() {
 		$woocommerce_currency = get_option( 'woocommerce_currency' );
@@ -245,7 +251,11 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 
 	/**
 	 * Process the payment and return the result
-	 **/
+	 *
+	 * @param int $order_id
+	 *
+	 * @return array
+	 */
 	function process_payment( $order_id ) {
 		$order = new WC_Order( $order_id );
 		if ( ! version_compare( WOOCOMMERCE_VERSION, '2.1.0', '<' ) ) {
@@ -257,14 +267,16 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 
 		return array(
 			'result'   => 'success',
-			'redirect' => add_query_arg( 'order-pay', $order->id,
+			'redirect' => add_query_arg( 'order-pay', $order_id,
 				add_query_arg( 'key', $order->order_key, get_permalink( wc_get_page_id( 'pay' ) ) ) )
 		);
 	}
 
 	/**
 	 * receipt_page
-	 **/
+	 *
+	 * @param $order_id
+	 */
 	function receipt_page( $order_id ) {
 		echo '<p>' . __( 'Для оплаты заказа нажмите кнопку ОПЛАТИТЬ.', 'robokassa-payment-gateway-saphali' ) . '</p>';
 		echo $this->generate_form( $order_id );
@@ -275,7 +287,11 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 	 * Generate the dibs button link
 	 *
 	 * Docs:
-	 **/
+	 *
+	 * @param $order_id
+	 *
+	 * @return string
+	 */
 	public function generate_form( $order_id ) {
 		$order      = new WC_Order( $order_id );
 		$action_adr = $this->liveurl;
@@ -394,19 +410,19 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 
 			// ( ! empty( $category ) ? $category . ': ' : '' ) .
 			$items[] = [
-				'name'           => $this->cut_words(
+				'name'     => $this->cut_words(
 					strtr( $item_product->get_name(), [ '.' => '', ',' => '' ] ),
 					$max_length = 64 ),
-				'quantity'       => (int) $item_product->get_quantity(),
-				'sum'            => (float) $item_product->get_total(),
-				'tax'            => 'none',
-				'payment_method' => 'full_prepayment',
+				'quantity' => (int) $item_product->get_quantity(),
+				'sum'      => (float) $item_product->get_total(),
+				'tax'      => 'none',
+				// 'payment_method' => 'full_prepayment',
 				// 'payment_object' => 'service', // not necessary
 			];
 
 		}
 
-		// Always use USN Income
+		// FIXME: Always use USN Income
 		$receipt = [
 			'sno'   => 'usn_income',
 			'items' => $items,
@@ -501,7 +517,11 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 
 	/**
 	 * Check RoboKassa IPN validity
-	 **/
+	 *
+	 * @param $posted
+	 *
+	 * @return bool
+	 */
 	function check_ipn_request_is_valid( $posted ) {
 		$out_summ = $posted['OutSum'];
 		$inv_id   = $posted['InvId'];
@@ -525,7 +545,9 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 
 	/**
 	 * Successful Payment!
-	 **/
+	 *
+	 * @param $posted
+	 */
 	function successful_request( $posted ) {
 		// $out_summ = $posted['OutSum'];
 		$inv_id = $posted['InvId'];
