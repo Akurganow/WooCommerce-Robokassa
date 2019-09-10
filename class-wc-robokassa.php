@@ -486,31 +486,39 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 	 * Check Response
 	 **/
 	function check_ipn_response() {
-		if ( isset( $_GET['robokassa'] ) AND $_GET['robokassa'] == 'result' ) {
-			@ob_clean();
+		if ( isset( $_GET['robokassa'] ) ) {
+			// logging
+			$log               = $_POST;
+			$log['log_method'] = 'successful_request';
+			$log['log_ip']     = MTools::remoteAddr();
+			$this->log_data( $log );
 
-			$_POST = stripslashes_deep( $_POST );
+			if ( $_GET['robokassa'] == 'result' ) {
+				@ob_clean();
 
-			if ( $this->check_ipn_request_is_valid( $_POST ) ) {
-				do_action( 'valid-robokassa-standard-ipn-request', $_POST );
-			} else {
-				wp_die( 'IPN Request Failure' );
+				$_POST = stripslashes_deep( $_POST );
+
+				if ( $this->check_ipn_request_is_valid( $_POST ) ) {
+					do_action( 'valid-robokassa-standard-ipn-request', $_POST );
+				} else {
+					wp_die( 'IPN Request Failure' );
+				}
+			} else if ( $_GET['robokassa'] == 'success' ) {
+				$inv_id = $_POST['InvId'];
+				$order  = new WC_Order( $inv_id );
+
+				WC()->cart->empty_cart();
+
+				wp_redirect( $this->get_return_url( $order ) );
+				exit;
+			} else if ( $_GET['robokassa'] == 'fail' ) {
+				$inv_id = $_POST['InvId'];
+				$order  = new WC_Order( $inv_id );
+				$order->update_status( 'failed', __( 'Платеж не оплачен', 'robokassa-payment-gateway-saphali' ) );
+
+				wp_redirect( str_replace( '&amp;', '&', $order->get_cancel_order_url() ) );
+				exit;
 			}
-		} else if ( isset( $_GET['robokassa'] ) AND $_GET['robokassa'] == 'success' ) {
-			$inv_id = $_POST['InvId'];
-			$order  = new WC_Order( $inv_id );
-
-			WC()->cart->empty_cart();
-
-			wp_redirect( $this->get_return_url( $order ) );
-			exit;
-		} else if ( isset( $_GET['robokassa'] ) AND $_GET['robokassa'] == 'fail' ) {
-			$inv_id = $_POST['InvId'];
-			$order  = new WC_Order( $inv_id );
-			$order->update_status( 'failed', __( 'Платеж не оплачен', 'robokassa-payment-gateway-saphali' ) );
-
-			wp_redirect( str_replace( '&amp;', '&', $order->get_cancel_order_url() ) );
-			exit;
 		}
 
 	}
@@ -549,6 +557,11 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 	 * @param $posted
 	 */
 	function successful_request( $posted ) {
+		// logging
+		$posted['log_method'] = 'successful_request';
+		$posted['log_ip']     = MTools::remoteAddr();
+		$this->log_data( $posted );
+
 		// $out_summ = $posted['OutSum'];
 		$inv_id = $posted['InvId'];
 
