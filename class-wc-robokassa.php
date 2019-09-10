@@ -489,7 +489,7 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 		if ( isset( $_GET['robokassa'] ) ) {
 			// logging
 			$log               = $_POST;
-			$log['log_method'] = 'successful_request';
+			$log['log_method'] = 'check_ipn_response()';
 			$log['log_ip']     = MTools::remoteAddr();
 			$this->log_data( $log );
 
@@ -558,7 +558,7 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 	 */
 	function successful_request( $posted ) {
 		// logging
-		$posted['log_method'] = 'successful_request';
+		$posted['log_method'] = 'successful_request()';
 		$posted['log_ip']     = MTools::remoteAddr();
 		$this->log_data( $posted );
 
