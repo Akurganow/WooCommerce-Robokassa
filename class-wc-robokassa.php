@@ -487,12 +487,6 @@ class WC_ROBOKASSA extends WC_Payment_Gateway {
 	 **/
 	function check_ipn_response() {
 		if ( isset( $_GET['robokassa'] ) ) {
-			// logging
-			$log               = $_POST;
-			$log['log_method'] = 'check_ipn_response()';
-			$log['log_ip']     = MTools::remoteAddr();
-			$this->log_data( $log );
-
 			if ( $_GET['robokassa'] == 'result' ) {
 				@ob_clean();
 
